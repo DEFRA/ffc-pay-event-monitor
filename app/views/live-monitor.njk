@@ -1,0 +1,65 @@
+{% extends './_layout.njk' %}
+
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+
+{% block beforeContent %}
+  
+  {{ govukBreadcrumbs({
+    items: [
+      {
+        text: "Home",
+        href: "/"
+      }
+    ]
+  }) }}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-l">
+      Live Run Monitor
+    </h1>
+    <div id="commmand-screen" class="commandScreen"></div>
+  </div>
+</div>
+
+  <script src="/static/js/monitor.1684a77adab1bc57f48d.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+<script>
+  const events = []
+  const connection = new signalR.HubConnectionBuilder()
+      .withUrl("http://localhost:7073/api", { headers: { 'Access-Control-Allow-Origin': 'http://localhost:7073' } })
+      .configureLogging(signalR.LogLevel.Information)
+      .build();
+
+  async function start() {
+        try {
+            await connection.start();
+            console.log("SignalR Connected.");
+        } catch (err) {
+            console.log(err);
+            setTimeout(start, 5000);
+        }
+    };
+
+    connection.onclose(async () => {
+        await start();
+    });
+
+    connection.on('payEvent', (data) => {
+      events.push(data)
+      const node = document.createElement("p");
+      const textnode = document.createTextNode(`${data.properties.action.timestamp} : ${data.name} (${data.properties.id}) - message: ${data.properties.action.message} - status: ${data.properties.status}`);
+      node.appendChild(textnode);
+      node.classList.add(data.properties.status === 'failed' ? 'line3' : "line1");
+      document.getElementById("commmand-screen").appendChild(node)
+    })
+
+    // Start the connection.
+    start();
+    console.log('TESTY TEST')
+    document.getElementById("live-monitor-container").value = 'TESTY TEST'
+</script>
+{% endblock %}
