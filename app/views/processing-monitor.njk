@@ -1,0 +1,57 @@
+{% extends '_layout.njk' %}
+
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+{% block beforeContent %}
+  {{ govukBreadcrumbs({
+    items: [
+      {
+        text: "Home",
+        href: "/"
+      }]
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+          <h1 class="govuk-heading-l">Processing Monitor</h1>
+          <div class="govuk-grid-row">
+            <div class="govuk-grid-column-one-half">
+              <div class="mermaid">
+                graph TD
+                    1[<strong>Blob Storage - Batch</strong><br>Inbound: {{ storageDetails.batchInbound.fileList.length }}<br>Archive: {{ storageDetails.batchArchive.fileList.length }}<br>Quarantine: {{ storageDetails.batchQuarantine.fileList.length }}] --> A
+                    click 1 "/storage-details" "click"
+                    A[<strong>Payment Batch Processor</strong>] --> |ffc-pay-request-enrichment| B
+                    B[<strong>Payment Enrichment</strong><br>Active Messages: {{ subscriptionDetails.enrichment.activeMessageCount }}<br>Dead Letter Messages: {{ subscriptionDetails.enrichment.deadLetterMessageCount }}] --> |ffc-pay-processing| C
+                    C[<strong>Payment Processing</strong><br>Active Messages: {{ subscriptionDetails.paymentProcessing.activeMessageCount }}<br>Dead Letter Messages: {{ subscriptionDetails.paymentProcessing.deadLetterMessageCount }}] --> |ffc-pay-submit-submission| D
+                    D[<strong>Payment Submission</strong><br>Active Messages: {{ subscriptionDetails.paymentSubmission.activeMessageCount }}<br>Dead Letter Messages: {{ subscriptionDetails.paymentSubmission.deadLetterMessageCount }}] --> E
+                    E[<strong>Blob Storage - Dax</strong><br>Outbound: 0] --> F
+                    F[<strong>Dynamics 365</strong>]
+                    G[<strong>Payment Management</strong>] --> C
+              </div>
+            </div>
+            <div class="govuk-grid-column-one-half">
+              <div class="mermaid">
+                graph TD
+                    A[<strong>Dynamics 365</strong>] --> B
+                    B[<strong>Blob Storage - Dax</strong><br>Inbound: 0<br>Archive: 0<br>Quarantine: 0] --> C
+                    C[<strong>Payment Response</strong><br>Active Messages: {{ subscriptionDetails.enrichment.activeMessageCount }}<br>Dead Letter Messages: {{ subscriptionDetails.enrichment.deadLetterMessageCount }}] --> |ffc-pay-acknowledge-processor| D
+                    D[<strong>Payment Processing</strong><br>Active Messages: {{ subscriptionDetails.paymentProcessing.activeMessageCount }}<br>Dead Letter Messages: {{ subscriptionDetails.paymentProcessing.deadLetterMessageCount }}]
+                    E[<strong>Payment Processing</strong><br>Active Messages: {{ subscriptionDetails.paymentProcessing.activeMessageCount }}<br>Dead Letter Messages: {{ subscriptionDetails.paymentProcessing.deadLetterMessageCount }}]
+                    C --> |ffc-pay-return-processing| E
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({startOnLoad:true, securityLevel='loose'});
+  </script>
+{% endblock %}

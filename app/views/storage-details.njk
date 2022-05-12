@@ -1,0 +1,49 @@
+{% extends '_layout.njk' %}
+
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+{% block beforeContent %}
+  {{ govukBreadcrumbs({
+    items: [
+      {
+        text: "Back",
+        href: "/processing-monitor"
+      }]
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-half">
+          <h1 class="govuk-heading-l">Storage Details</h1>
+          <h1 class="govuk-heading-m">Inbound</h1>
+            <ul class="govuk-list">
+             {% for item in storageDetails.batchInbound.fileList %}
+               <li><a class="govuk-link" href="/storage-details?filename={{item}}&prefix={{storageDetails.batchInbound.prefix}}">{{ item }}</a></li>
+             {% endfor %}
+           </ul>
+          <h1 class="govuk-heading-m">Archive</h1>
+            <ul class="govuk-list">
+              {% for item in storageDetails.batchArchive.fileList %}
+                <li><a class="govuk-link" href="/storage-details?filename={{item}}&prefix={{storageDetails.batchArchive.prefix}}">{{ item }}</a></li>
+              {% endfor %}
+            </ul>
+          <h1 class="govuk-heading-m">Quarantine</h1>
+            <ul class="govuk-list">
+              {% for item in storageDetails.batchQuarantine.fileList %}
+                <li><a class="govuk-link" href="/storage-details?filename={{item}}&prefix={{storageDetails.batchQuarantine.prefix}}">{{ item }}</a></li>
+              {% endfor %}
+            </ul>
+        </div>
+        <div class="govuk-grid-column-one-half">
+          <h1 class="govuk-heading-m">File Details</h1>
+          <p class="govuk-body">Created On: {{ fileDetails.createdOn }} </p>
+          <p style="overflow: scroll; color: white; background-color: black; height: 400px; font-size: 10px; padding: 4px">{{ fileContent }} </p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  ffc-pay-event-monitor:
+    build:
+      context: .
+      target: production
+    image: ffc-pay-event-monitor
+    container_name: ffc-pay-event-monitor
+    environment:
+      APPINSIGHTS_CLOUDROLE: ffc-pay-event-monitor-local
+      APPINSIGHTS_INSTRUMENTATIONKEY: ${APPINSIGHTS_INSTRUMENTATIONKEY}
+      AZURE_STORAGE_ACCOUNT_NAME: ${AZURE_STORAGE_ACCOUNT_NAME:-devstoreaccount1}
+      AZURE_STORAGE_USE_CONNECTION_STRING: "true"

@@ -1,0 +1,8 @@
+{{- include "ffc-helm-library.deployment" (list . "ffc-pay-event-monitor.deployment") -}}
+{{- define "ffc-pay-event-monitor.deployment" -}}
+spec:
+  template:
+    spec:
+      containers:
+      - {{ include "ffc-helm-library.container" (list . "ffc-pay-event-monitor.container") }}
+{{- end -}}

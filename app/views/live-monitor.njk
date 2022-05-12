@@ -1,0 +1,44 @@
+{% extends './_layout.njk' %}
+
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+
+{% block beforeContent %}
+  
+  {{ govukBreadcrumbs({
+    items: [
+      {
+        text: "Home",
+        href: "/"
+      }
+    ]
+  }) }}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-l">
+      Live Run Monitor
+    </h1>
+    <p id="live-monitor-message" class="govuk-body"></p>
+    <div id="live-monitor" class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-form-group">
+          <input class="govuk-input" onkeyup="monitor.filterEvent()" id="event-id-search" name="event-id-search" type="text" placeholder="Search for event id..">
+        </div>
+        <div id="commmand-screen" class="commandScreen"></div>
+      </div>
+      <div class="govuk-grid-column-one-third">
+        <h2 class="govuk-heading-m">Event details</h2>
+        <div id="event-details" class="govuk-body"></div>
+      </div>
+    </div>
+</div>
+
+  <script src="/static/js/monitor.457b03fe9bc4cd512772.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+<script>
+    monitor.startMonitor(signalR)
+</script>
+{% endblock %}
