@@ -3,6 +3,8 @@ const routes = [].concat(
   require('../routes/healthz'),
   require('../routes/static'),
   require('../routes/home'),
+  require('../routes/processing-monitor'),
+  require('../routes/storage-details'),
   require('../routes/live-monitor')
 )
 

@@ -2,7 +2,7 @@ module.exports = {
   method: 'GET',
   path: '/',
   options: {
-    handler: (request, h) => {
+    handler: async (request, h) => {
       return h.view('home')
     }
   }

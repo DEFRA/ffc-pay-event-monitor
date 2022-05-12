@@ -10,8 +10,10 @@ services:
     image: ffc-pay-event-monitor-development
     container_name: ffc-pay-event-monitor-development
     ports:
-      - "3015:3015"
+      - "3020:3020"
       - "9229:9229"
     volumes:
       - ./app:/home/node/app
       - ./package.json:/home/node/package.json
+    environment:
+      AZURE_STORAGE_CONNECTION_STRING: "DefaultEndpointsProtocol=https;AccountName=devffcpayst1001;AccountKey=yDjJYCYEXHoIt0YhdXR/fzIITj2KNRsXu33E708uARMNXrn2MNDAyJDrg9R+T3kBwv13GvG+Lxt7ET2DDOjq3g==;EndpointSuffix=core.windows.net"

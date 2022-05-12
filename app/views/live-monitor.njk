@@ -20,46 +20,25 @@
     <h1 class="govuk-heading-l">
       Live Run Monitor
     </h1>
-    <div id="commmand-screen" class="commandScreen"></div>
-  </div>
+    <p id="live-monitor-message" class="govuk-body"></p>
+    <div id="live-monitor" class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-form-group">
+          <input class="govuk-input" onkeyup="monitor.filterEvent()" id="event-id-search" name="event-id-search" type="text" placeholder="Search for event id..">
+        </div>
+        <div id="commmand-screen" class="commandScreen"></div>
+      </div>
+      <div class="govuk-grid-column-one-third">
+        <h2 class="govuk-heading-m">Event details</h2>
+        <div id="event-details" class="govuk-body"></div>
+      </div>
+    </div>
 </div>
 
-  <script src="/static/js/monitor.1684a77adab1bc57f48d.js"></script>
+  <script src="/static/js/monitor.457b03fe9bc4cd512772.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
 <script>
-  const events = []
-  const connection = new signalR.HubConnectionBuilder()
-      .withUrl("http://localhost:7073/api", { headers: { 'Access-Control-Allow-Origin': 'http://localhost:7073' } })
-      .configureLogging(signalR.LogLevel.Information)
-      .build();
-
-  async function start() {
-        try {
-            await connection.start();
-            console.log("SignalR Connected.");
-        } catch (err) {
-            console.log(err);
-            setTimeout(start, 5000);
-        }
-    };
-
-    connection.onclose(async () => {
-        await start();
-    });
-
-    connection.on('payEvent', (data) => {
-      events.push(data)
-      const node = document.createElement("p");
-      const textnode = document.createTextNode(`${data.properties.action.timestamp} : ${data.name} (${data.properties.id}) - message: ${data.properties.action.message} - status: ${data.properties.status}`);
-      node.appendChild(textnode);
-      node.classList.add(data.properties.status === 'failed' ? 'line3' : "line1");
-      document.getElementById("commmand-screen").appendChild(node)
-    })
-
-    // Start the connection.
-    start();
-    console.log('TESTY TEST')
-    document.getElementById("live-monitor-container").value = 'TESTY TEST'
+    monitor.startMonitor(signalR)
 </script>
 {% endblock %}
